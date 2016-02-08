@@ -42,7 +42,7 @@ class SSLify(object):
     def skip(self):
         """Checks the skip list."""
         # Should we skip?
-        if self.skip_list and isinstance(self.skip_list, list): 
+        if self.skip_list and isinstance(self.skip_list, list):
             for skip in self.skip_list:
                 if request.path.startswith('/{0}'.format(skip)):
                     return True
@@ -54,7 +54,9 @@ class SSLify(object):
         criteria = [
             request.is_secure,
             current_app.debug,
-            request.headers.get('X-Forwarded-Proto', 'http') == 'https'
+            request.headers.get('X-Forwarded-Proto', 'http') == 'https',
+            "X-Appengine-Cron" in request.headers,
+            "X-Appengine-TaskName" in request.headers
         ]
 
         if not any(criteria) and not self.skip:
